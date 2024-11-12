@@ -5,9 +5,13 @@ from modules.subscriber import Subscriber
 import time
 
 class DeviceController:
+    # initialize
     def __init__(self):
+        # hardware control
         self.maannhai = MaanNhai(init_status="close")
+        # request queue
         self.request_queue = queue.Queue()
+        # remote control subscriber
         self.mqtt_subscriber = Subscriber(topic="maannhai-mqtt", callback=self.handle_mqtt_message)
 
     def handle_mqtt_message(self, message):
@@ -16,15 +20,19 @@ class DeviceController:
         """
         self.request_queue.put(message)
 
-
     def device_loop(self):
+        # handle MQTT
         while True:
+            # when requested
             if not self.request_queue.empty():
                 action = self.request_queue.get()
+                # open the curtain
                 if action == "OPEN":
                     self.maannhai.open_curtain()
+                # close the curtain
                 elif action == "CLOSE":
                     self.maannhai.close_curtain()
+            # sleep to help with performance
             else:
                 time.sleep(0.1)
             
