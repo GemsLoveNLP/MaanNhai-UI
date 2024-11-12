@@ -2,8 +2,7 @@ from gtts import gTTS
 import os
 import playsound
 
-
-
+# a cloud based TTS function
 def speak(phrase):
     # Create gTTS object
     tts = gTTS(text=phrase, lang='en', slow=False)
