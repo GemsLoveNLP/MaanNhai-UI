@@ -1,6 +1,8 @@
 import time
 from gpiozero import LED, Button, DigitalInputDevice
-from utils.tts import speak
+from utils.tts import speak, OPEN, CLOSE, OFF, ENA
+
+# Note that the speech is disabled here, but can be uncommented to activate
 
 # initialize a class for the control over the hardware
 class MaanNhai:
@@ -150,7 +152,8 @@ class MaanNhai:
             self.ledCyan()
             self.moveUntilMotor()
             self.status = "open"
-            # speak("open")
+            if ENA:
+                speak("open")
             print("[DEVICE] Curtains are OPENED")
             self.ledGreen()
 
@@ -161,7 +164,8 @@ class MaanNhai:
             self.ledYellow()
             self.moveUntilPulley()
             self.status = "close"
-            # speak("close")
+            if ENA:
+                speak("close")
             print("[DEVICE] Curtains are CLOSED")
             self.ledGreen()
 
@@ -183,14 +187,16 @@ class MaanNhai:
                 print("lmPulley active")
                 self.stopPulley()
                 self.status = "close"
-                # speak("close")
+                if ENA:
+                    speak(CLOSE)
 
             # if the motor side limit switch is hit
             if not self.lmMotor.is_active:
                 print("lmMotor active")
                 self.stopMotor()
                 self.status = "open"
-                # speak("open")
+                if ENA:
+                    speak(OPEN)
 
             # if push button 1 is pressed
             if self.button1.is_pressed:
@@ -213,20 +219,23 @@ class MaanNhai:
                 if self.button1.is_pressed:
                     self.moveHome()
                     print("Curtain Turning off")
-                    # speak("Curtain turning off")
+                    if ENA:
+                        speak(OFF)
                     return
                 # if closed, then move until open
                 if self.status == "close":
                     self.moveUntilMotor()
                     time.sleep(0.01)
                     self.status = "open"
-                    # speak("open")
+                    if ENA:
+                        speak(OPEN)
                 # if opened, then move until close
                 else:
                     self.moveUntilPulley()
                     time.sleep(0.01)
                     self.status = "close"
-                    # speak("close")
+                    if ENA:
+                        speak(CLOSE)
 
             # sleep to better performance
             time.sleep(0.1)
